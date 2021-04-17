@@ -1,7 +1,7 @@
 const w : number = window.innerWidth 
 const h : number = window.innerHeight 
-const scGap : number = 0.02 
-const parts : number = 4 
+const parts : number = 2
+const scGap : number = 0.02 / parts
 const strokeFactor : number = 90 
 const sizeFactor : number = 5.9 
 const delay : number = 20 
@@ -64,7 +64,10 @@ class DrawingUtil {
         context.save()
         context.translate(w / 2, h / 2)
         for (var j = 0; j < 2; j++) {
-            DrawingUtil.drawLine(context, 0, 0, r * (1 -2  * j) * sf1, -r * sf1)
+            context.save()
+            context.rotate(deg * (1 - 2 * j))
+            DrawingUtil.drawLine(context, 0, 0, r * (1 -2  * j) * sf1, 0)
+            context.restore()
         }
         context.save()
         context.rotate(deg)
@@ -216,6 +219,7 @@ class VArcStroke {
             this.curr = this.curr.getNext(this.dir, () => {
                 this.dir *= -1
             })
+            console.log(this.curr)
             cb()
         })
     }
@@ -228,7 +232,7 @@ class VArcStroke {
 class Renderer {
 
     animator : Animator = new Animator()
-    vas : VASNode = new VASNode(0)
+    vas : VArcStroke = new VArcStroke()
 
     render(context : CanvasRenderingContext2D) {
         this.vas.draw(context)
