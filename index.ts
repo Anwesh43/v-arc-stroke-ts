@@ -220,3 +220,25 @@ class VArcStroke {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    animator : Animator = new Animator()
+    vas : VASNode = new VASNode(0)
+
+    render(context : CanvasRenderingContext2D) {
+        this.vas.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.vas.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.vas.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
